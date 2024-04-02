@@ -1,0 +1,18 @@
+::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra de desplazamiento */
+    border-radius: 8px; /* Radio de borde para hacerlo redondeado */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: transparent; /* Color de fondo de la pista */
+    
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #7a7a7a; /* Color del botón de la barra de desplazamiento */
+    border-radius: 10px; /* Radio de borde para hacerlo redondeado */
+    border: 1px; /* Sin borde */
+    scroll-margin-right: 1px;
+
+  }
+  
