@@ -6,11 +6,10 @@ import MessageIA from './MessageIA'
 const IA = () => {
   return (
     <>
-         <div className=' bg-stone-200 -mt-20 h-5/6 -mb-5 overflow-auto z-[-1]'>
-          <div className='mt-24  '>
-              <MessageIA />
-             
-          </div>
+       <div className='bg-stone-200 h-2/3 overflow-auto'>
+       
+       <MessageIA />
+   
         </div>
 
 

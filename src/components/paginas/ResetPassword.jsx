@@ -8,7 +8,7 @@ const ResetPassword = () => {
     <div className='text-white text-center text-7xl mt-16 font-pragati'>
     <NavLink  to="/"> Modeler </NavLink> 
     </div> 
-    <p className='text-white text-center mt-10 font-outfit mb-10 '>Cambiar contraseña</p>
+    <p className='text-white text-center mt-10 font-outfit mb-10 text-lg font-semibold '>Cambiar contraseña</p>
 
 
     <div className='flex justify-center'>

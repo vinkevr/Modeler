@@ -5,53 +5,57 @@ import ModalCreateProject from '../ui/ModalCreateProject';
 import ModalAccount from '../ui/ModalAccount';
 import { useState } from 'react';
 
+
 const Panel = () => {
 
-    const [modalOpen, setModalOpen] = useState(false);
-    const [modalOpenAcc, setModalOpenAcc] = useState(false);
+  const [modalActivo, setModalActivo] = useState(null);
 
-    const handleOpenModal = () => {
-      setModalOpen(true);
-    };
-  
-    const handleCloseModal = () => {
-      setModalOpen(false);
-    };
+  const abrirModal = (modal) => {
+    setModalActivo(modal);
+  };
 
-    const handleOpenModalAcc = () => {
-        setModalOpen(true);
-      };
-    
-      const handleCloseModalAcc = () => {
-        setModalOpen(false);
-      };
+  const cerrarModal = () => {
+    setModalActivo(null);
+  };
+
 
     
   return (
-    <div className='bg-zinc-800 w-full h-screen'>  
+    <div className='bg-zinc-800 w-full h-auto'>  
+      
         <div className='px-40 flex justify-between'>
-            <div className='mt-20 font-pragati text-white text-5xl '>Modeler</div>
-            <button  onClick={handleOpenModalAcc} className='mt-20 w-10 h-10 bg-blue-500 rounded-full'></button>
-            <ModalAccount isOpen={modalOpenAcc} onClose={handleCloseModalAcc} />
+            <div className='mt-16 font-pragati text-white text-5xl'>Modeler</div>
+            <button onClick={() => abrirModal('modalAccount')} className='mt-16 w-10 h-10 ml-auto bg-blue-500 rounded-full'></button>
         </div> 
         <div className='mb-20'>
             <p className='font-outfit text-white text-center text-2xl mt-5'>Tus proyectos</p>
         </div>
+  
 
-        <div className='flex mx-28'>
-            <button  onClick={handleOpenModal}  className='w-1/4 bg-zinc-700 h-44 rounded-lg m-5 flex flex-col items-center justify-center'>
+        <div className='grid grid-cols-4 mx-28 pb-5'>
+            <button onClick={() => abrirModal('modalCreateProject')}  className='bg-zinc-700 h-44 rounded-lg m-5 flex flex-col items-center justify-center'>
                 <img src={add} alt="agregar" className='mb-2' />
                 <span className='text-white text-center font-outfit'>
                     Nuevo proyecto
                 </span>
+                
             </button>
-            <ModalCreateProject isOpen={modalOpen} onClose={handleCloseModal} />
-
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            
+           
+           
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+            <ProjectCard onButtonClick={() => abrirModal('modalFromProjectCard')}/>
+           
+           
         </div>
+        {modalActivo === 'modalAccount' && <ModalAccount onClose={cerrarModal} />}
+        {modalActivo === 'modalCreateProject' && <ModalCreateProject onClose={cerrarModal} />}
+        
     </div>
   )
 }

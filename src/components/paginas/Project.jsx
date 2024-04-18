@@ -5,6 +5,7 @@ import newicon from '../../images/new.png'
 import shape from '../../images/shape.png'
 import arrow from '../../images/Arrow.png'
 import redo from '../../images/redo.png'
+import diagrama from '../../images/Diagrama_ejemplo.png'
 import { useState } from 'react';
 import SidebarChat from '../ui/SidebarChat';
 
@@ -40,7 +41,9 @@ const Project = () => {
 
 
         <div className='bg-zinc-800 w-full'>
-             
+            <div className='flex justify-center items-center h-screen'>
+            <img src={diagrama} className='mb-8 h-2/3 w-2/3'/>
+            </div>
         </div>
 
         

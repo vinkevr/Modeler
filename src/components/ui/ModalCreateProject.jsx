@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-const ModalCreateProject = ({ isOpen, onClose }) => {
+const ModalCreateProject = ({ onClose }) => {
   return (
     <div>
-       {isOpen && (
+       
         <div className="fixed inset-0 overflow-y-auto flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-black opacity-50"></div>
           <div className="bg-zinc-600 p-16 rounded-lg z-10 w-1/2 ">
@@ -29,7 +29,7 @@ const ModalCreateProject = ({ isOpen, onClose }) => {
 
           </div>
         </div>
-      )}
+     
     </div>
   )
 }

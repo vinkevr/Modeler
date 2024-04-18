@@ -27,21 +27,25 @@ const Login = () => {
         </div>
 
         <div className='flex justify-center'>
-        <div className="w-1/4 ">
-          <input
+          <div className="w-1/4 ">
+            <input
             type="password"
             id="password" 
             placeholder='Contraseña'
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border mb-10 border-gray-300 px-6 py-3 rounded-lg focus:outline-none focus:outline-blue-500 focus:shadow-outline"
-          />
+             />
+          </div>
         </div>
+      <div className='flex 3/5 justify-center text-xs'>
+        <div className=' justify-start'>
+          <div className='text-white font-outfit '><NavLink  to="/recover" className= " text-white ml-2 font-outfit"> Olvidé mi contraseña </NavLink>  </div>
         </div>
-
-        <div className='flex w-3/5 justify-end ml-9'>
+     
+        <div className='justify-end ml-20'>
           <div className='text-white font-outfit '>¿No tienes cuenta? <NavLink  to="/create" className= "underline text-white ml-2"> Crea una aquí</NavLink>  </div>
         </div>
-
+      </div>
 
         <div className='flex justify-center items-center font-semibold mt-12'>
             <button className='bg-sky-900 text-white text-center px-16 py-3 rounded-xl shadow-2xl font-outfit  hover:bg-sky-700 hover:text-white transition ease-in-out duration-300 '>Iniciar sesión</button>

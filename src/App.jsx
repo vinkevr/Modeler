@@ -7,6 +7,11 @@ import Panel from './components/paginas/Panel';
 import Project from './components/paginas/Project';
 import RecoverPassword from './components/paginas/RecoverPassword';
 import ResetPassword from './components/paginas/ResetPassword';
+import RecoverPassMessage from './components/paginas/RecoverPassMessage';
+import VerifyEmail from './components/paginas/VerifyEmail';
+import AccountVerified from './components/paginas/AccountVerified';
+import ExpiredToken from './components/paginas/ExpiredToken';
+import NotFound from './components/paginas/NotFound';
 
 function App() {
 
@@ -21,6 +26,11 @@ function App() {
           <Route path="project" element = {<Project />}/>
           <Route path="recover" element = {<RecoverPassword />}/>
           <Route path="reset" element = {<ResetPassword />}/>
+          <Route path="recovermess" element = {<RecoverPassMessage />}/>
+          <Route path="verify" element = {<VerifyEmail />}/>
+          <Route path="verified" element = {<AccountVerified />}/>
+          <Route path="expired" element = {<ExpiredToken />}/>
+          <Route path="notfound" element = {<NotFound />}/>
        </Routes>
     </>
   );
