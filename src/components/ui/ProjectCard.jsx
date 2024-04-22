@@ -2,20 +2,9 @@ import React from 'react'
 import diagram from '../../images/diagram_3.png';
 import delete2 from '../../images/delete2.png';
 import download2 from '../../images/download2.png';
-import ModalDeleteDiagram from './ModalDeleteDiagram';
 import { useState } from 'react';
-
-const ProjectCard = () => {
-
-    const [modalActivo, setModalActivo] = useState(false);
-
-    const abrirModal = () => {
-      setModalActivo(true);
-    };
-  
-    const cerrarModal = () => {
-      setModalActivo(false);
-    };
+import { Link } from 'react-router-dom';
+const ProjectCard = ({proyecto, setIdEliminar, abrirModalEliminar}) => {
   
   return (
     <>
@@ -32,25 +21,24 @@ const ProjectCard = () => {
         </div>
     </div>
   */}
-    <div className='m-5 bg-zinc-700 h-44 rounded-lg flex flex-col'>
-        <button className='ml-auto mt-5 mr-5' onClick={abrirModal}>
+    <div
+    className='m-5 bg-zinc-700 h-44 rounded-lg flex flex-col items-center hover:-translate-y-2 transition-all ease-in-out duration-500'>
+        <button className='ml-auto mt-5 mr-5 z-50' onClick={()=>{
+            setIdEliminar(proyecto.id)
+            abrirModalEliminar("modalDeleteProject")
+        }}>
             <img src={delete2} className='h-5 w-5' alt='Eliminar' />
         </button>
+        <Link 
+        to={`/project/${proyecto.id}`}>
         <button className='flex flex-col items-center justify-center'>
             <img src={diagram} className='h-20 w-20' alt='Diagrama' />
             <div className='text-white text-center font-outfit'>
-            <p>Farmacia</p>
+            <p>{proyecto.nombre}</p>
             </div>
         </button>
-    
-
-        <button className='ml-auto mr-5'>
-            <img src={download2} className='h-5 w-5' alt='descargar' />
-        </button>
-
-        {modalActivo && <ModalDeleteDiagram onClose={cerrarModal} />}
-    </div>
-
+    </Link>
+   </div>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import delete2 from '../../images/delete2.png';
 
-const ModalAccount = ({onClose}) => {
+const ModalAccount = ({nombre, onClose}) => {
   return (
     <div>
   
@@ -15,7 +15,7 @@ const ModalAccount = ({onClose}) => {
             <img src={delete2} className='h-5 w-5' alt='Eliminar' />
             </button>
 
-            <span className='font-semibold text-white flex justify-center mt-5'>Kevin Ramirez</span>
+            <span className='font-semibold text-white flex justify-center mt-5'>{nombre}</span>
 
             <button className="mt-10 px-4 py-2 bg-red-800 text-white rounded">Cerrar sesión</button>
             </div>

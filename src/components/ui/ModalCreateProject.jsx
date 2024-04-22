@@ -1,6 +1,36 @@
-import React, { useState } from 'react';
-
-const ModalCreateProject = ({ onClose }) => {
+import React, { useState, useContext } from 'react';
+import UserContext from '../../context/UserContext';
+import { alertError, alertSuccess } from '../../helpers/alertas';
+const ModalCreateProject = ({ onClose, setProyectos, proyectos }) => {
+  const { user } = useContext(UserContext)
+  const [nombreProyecto, setNombreProyecto] = useState('')
+  const handleSubmit = async () => {
+    if(nombreProyecto == ''){
+      alertError('El nombre del proyecto es obligatorio')
+      return
+    }
+    const token = localStorage.getItem('token')
+    const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/crear`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        nombre: nombreProyecto,
+        usuarioCreador:user.id
+      })
+    })
+    const data = await response.json()
+    if (data.hasOwnProperty('error')) {
+      alertError(data.error)
+    } else {
+      alertSuccess(data.mensaje)
+      setProyectos([...proyectos, {id:data.nombre, nombre:data.nombre, usuarioCreador:data.usuarioCreador}])
+      onClose()
+    }
+  }
   return (
     <div>
        
@@ -15,7 +45,7 @@ const ModalCreateProject = ({ onClose }) => {
                     type="text"
                     id="NombreProyecto"
                     placeholder='Nombre del proyecto'
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setNombreProyecto(e.target.value.trim())}
                     className="w-full shadow-lg border border-gray-300 px-6 py-3 rounded-lg focus:outline-none focus:outline-blue-500 focus:shadow-outline"
                     />
                 </div>
@@ -23,8 +53,13 @@ const ModalCreateProject = ({ onClose }) => {
 
            
             <div className='flex justify-around mr-16 ml-16 '>
-                <button onClick={onClose} className="mt-4 px-14 py-3 bg-red-900 text-white rounded-lg hover:bg-red-800 ease-in-out transition duration-300 shadow-lg">Cancelar</button>
-                <button  className="mt-4 px-10 py-3 bg-sky-900 text-white rounded-lg hover:bg-sky-800 ease-in-out transition duration-300 shadow-lg">Crear proyecto </button>
+                <button onClick={onClose} 
+                className="mt-4 px-14 py-3 bg-red-900 text-white rounded-lg hover:bg-red-800 ease-in-out transition duration-300 shadow-lg"
+                >Cancelar</button>
+                <button  
+                className="mt-4 px-10 py-3 bg-sky-900 text-white rounded-lg hover:bg-sky-800 ease-in-out transition duration-300 shadow-lg"
+                onClick={handleSubmit}
+                >Crear proyecto </button>
             </div>
 
           </div>
