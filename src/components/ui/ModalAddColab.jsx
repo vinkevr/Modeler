@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { alertError, alertSuccess } from '../../helpers/alertas'
+import firebase from '../../firebase'
 const ModalAddColab = ({onClose, idRuta}) => {
   const [email, setEmail] = useState('')
   const handleSubmit = async () => {
@@ -19,6 +20,15 @@ const ModalAddColab = ({onClose, idRuta}) => {
       alertError(response.error)
     }else{
       alertSuccess(response.mensaje)
+      //Agrear al usuario en firebase
+      console.log("agregando en firebase")
+      await firebase.db.collection("usuariosEnProyectos").add({
+        idProyecto: idRuta,
+        idUsuario: response.idUsuario,
+        activo:false,
+        email: response.email,
+        nombre: response.nombre
+      })
       onClose()
     }
     

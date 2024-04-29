@@ -27,7 +27,7 @@ const ModalCreateProject = ({ onClose, setProyectos, proyectos }) => {
       alertError(data.error)
     } else {
       alertSuccess(data.mensaje)
-      setProyectos([...proyectos, {id:data.nombre, nombre:data.nombre, usuarioCreador:data.usuarioCreador}])
+      setProyectos([...proyectos, {id:data.id, nombre:data.nombre, usuarioCreador:data.usuarioCreador}])
       onClose()
     }
   }
