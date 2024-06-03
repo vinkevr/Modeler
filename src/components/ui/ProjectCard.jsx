@@ -44,9 +44,6 @@ const ProjectCard = () => {
         </button>
     
 
-        <button className='ml-auto mr-5'>
-            <img src={download2} className='h-5 w-5' alt='descargar' />
-        </button>
 
         {modalActivo && <ModalDeleteDiagram onClose={cerrarModal} />}
     </div>

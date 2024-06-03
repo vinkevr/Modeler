@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Chat from './Chat';
 import IA from './IA';
 import ModalAddColab from './ModalAddColab';
+    
 
 const SidebarChat = () => {
 
