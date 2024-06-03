@@ -4,4 +4,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+.link-activo{
+    filter: invert(65%) sepia(60%) saturate(900%) hue-rotate(185deg)
+}

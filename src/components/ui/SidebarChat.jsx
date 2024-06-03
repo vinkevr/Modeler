@@ -5,7 +5,7 @@ import IA from './IA';
 import ModalAddColab from './ModalAddColab';
     
 
-const SidebarChat = () => {
+const SidebarChat = ({idRuta}) => {
 
     const [botonSeleccionado, setBotonSeleccionado] = useState(null);
       
@@ -24,12 +24,12 @@ const SidebarChat = () => {
     };
 
   return (
-    <div className='w-1/3 bg-stone-200'>
+    <div className='w-1/3 bg-stone-200 z-50'>
             <div className=' bg-zinc-500 p-4 text-white flex justify-evenly mb-5'>
                 <button onClick={abrirModal} className='bg-sky-900 px-10 py-2 rounded-lg shadow-lg mx-2'>
                     Compartir
                 </button>
-                {modalActivo && <ModalAddColab onClose={cerrarModal} />}
+                {modalActivo && <ModalAddColab onClose={cerrarModal} idRuta={idRuta}/>}
                 <div className='flex ml-10 '>
                     <div className='w-10 h-10 -ml-5 bg-blue-500 rounded-full'></div>
                     <div className='w-10 h-10 -ml-5 bg-orange-600 rounded-full'></div>
