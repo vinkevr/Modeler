@@ -1,7 +1,12 @@
 import React from 'react'
 import delete2 from '../../images/delete2.png';
-
+import { useNavigate } from 'react-router-dom';
 const ModalAccount = ({nombre, onClose}) => {
+  const navigate = useNavigate()
+  const handleCerrarSesion = () => {
+    localStorage.removeItem('token')
+    navigate('/')
+  }
   return (
     <div>
   
@@ -17,7 +22,9 @@ const ModalAccount = ({nombre, onClose}) => {
 
             <span className='font-semibold text-white flex justify-center mt-5'>{nombre}</span>
 
-            <button className="mt-10 px-4 py-2 bg-red-800 text-white rounded">Cerrar sesión</button>
+            <button className="mt-10 px-4 py-2 bg-red-800 text-white rounded"
+            onClick={handleCerrarSesion}
+            >Cerrar sesión</button>
             </div>
 
           </div>
