@@ -1,19 +1,36 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Chat from './Chat';
 import IA from './IA';
 import ModalAddColab from './ModalAddColab';
-    
-
+import UserContext from '../../context/UserContext';
+import firebase from '../../firebase';
+import {formatearNombre} from '../../helpers/formatear';
 const SidebarChat = ({idRuta}) => {
-
+    const {user} = useContext(UserContext);
     const [botonSeleccionado, setBotonSeleccionado] = useState(null);
+    const [usuarios, setUsuarios] = useState([]);
+    const [modalActivo, setModalActivo] = useState(false);
+    useEffect(() =>{
+        const usuariosParticipantes = async () => {
+          //Obtener los usuarios participantes en el proyecto
+      const request = await fetch(`${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/usuarios-participan`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({id:idRuta})
+    })
+    const usuariosP = await request.json()
+    setUsuarios(usuariosP)
+  }
+      usuariosParticipantes()
+    }, [])
       
     const handleSeleccionarBoton = (boton) => {
       setBotonSeleccionado(boton);
     };
-
-    const [modalActivo, setModalActivo] = useState(false);
 
     const abrirModal = () => {
       setModalActivo(true);
@@ -25,16 +42,26 @@ const SidebarChat = ({idRuta}) => {
 
   return (
     <div className='w-1/3 bg-stone-200 z-50'>
-            <div className=' bg-zinc-500 p-4 text-white flex justify-evenly mb-5'>
+            <div className=' bg-zinc-500 p-4 text-white flex  justify-between mb-5 '>
+                
                 <button onClick={abrirModal} className='bg-sky-900 px-10 py-2 rounded-lg shadow-lg mx-2'>
                     Compartir
                 </button>
                 {modalActivo && <ModalAddColab onClose={cerrarModal} idRuta={idRuta}/>}
-                <div className='flex ml-10 '>
-                    <div className='w-10 h-10 -ml-5 bg-blue-500 rounded-full'></div>
-                    <div className='w-10 h-10 -ml-5 bg-orange-600 rounded-full'></div>
-                    <div className='w-10 h-10 ml-5 bg-yellow-600 rounded-full'></div>
+               
+               
+                <div className='flex ml-10 font-pragati'>
+                  {
+                    usuarios.map((u) => (
+                      <div   
+                      className={`-ml-3 w-10 h-10  flex justify-center items-center bg-${user.id == u.id ? "sky" :Math.round(Math.random()*3) == 1 ? "violet" : "rose" }-900 rounded-full text-white font-semibold text-lg`}
+                      key={u.id}
+                      >{user.id == u.id ? "Tu" : formatearNombre(u.nombre)}</div>
+                    ))
+                  }
                 </div>
+                <div className={` hidden -ml-3 w-10 h-10    bg-rose-900 rounded-full text-white font-semibold text-lg`}></div>
+                <div className={`hidden -ml-3 w-10 h-10    bg-violet-900 rounded-full text-white font-semibold text-lg`}></div>
             </div>
 
             <div className='flex z-40'>

@@ -2,10 +2,11 @@ import React from 'react'
 import diagram from '../../images/diagram_3.png';
 import delete2 from '../../images/delete2.png';
 import download2 from '../../images/download2.png';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import UserContext from '../../context/UserContext';
 import { Link } from 'react-router-dom';
 const ProjectCard = ({proyecto, setIdEliminar, abrirModalEliminar}) => {
-  
+  const {user} = useContext(UserContext);  
   return (
     <>
     {/*
@@ -22,13 +23,18 @@ const ProjectCard = ({proyecto, setIdEliminar, abrirModalEliminar}) => {
     </div>
   */}
     <div
-    className='m-5 bg-zinc-700 h-44 rounded-lg flex flex-col items-center hover:-translate-y-2 transition-all ease-in-out duration-500'>
-        <button className='ml-auto mt-5 mr-5 z-50' onClick={()=>{
-            setIdEliminar(proyecto.id)
-            abrirModalEliminar("modalDeleteProject")
-        }}>
-            <img src={delete2} className='h-5 w-5' alt='Eliminar' />
-        </button>
+    className='relative m-5 bg-zinc-700 h-44 rounded-lg flex flex-col items-center justify-center hover:-translate-y-2 transition-all ease-in-out duration-500'>
+        {
+            proyecto.usuarioCreador == user.id && (
+                <button className='absolute top-0 right-0 ml-auto mt-5 mr-5 z-50' 
+                onClick={()=>{
+                    setIdEliminar(proyecto.id)
+                    abrirModalEliminar("modalDeleteProject")
+                }}>
+                    <img src={delete2} className='h-5 w-5' alt='Eliminar' />
+                </button>
+            )
+        }
         <Link 
         to={`/project/${proyecto.id}`}>
         <button className='flex flex-col items-center justify-center'>
