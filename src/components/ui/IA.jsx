@@ -4,7 +4,7 @@ import '../../site.css';
 import MessageSent from './MessageSent';
 
 const IA = () => {
-  const API_KEY = "sk-proj-zIaMhZD0BL3NbxxWukCAT3BlbkFJyzypaUAm9tw6UdrghvSm";
+  const API_KEY = "";
   const [messages, setMessages] = useState([
     {
       message: "Hola, soy ChatGPT. Si tienes alguna pregunta relacionada a las bases de datos no dudes en preguntarme.",
