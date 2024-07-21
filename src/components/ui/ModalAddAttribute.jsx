@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { opcionesEntidad } from "../../helpers/formatear"
 import { set } from "firebase/database"
-const ModalAddAttribute = ({addEntityElement}) => {
+const ModalAddAttribute = ({addEntityElement, x, y}) => {
     const [showModal, setShowModal] = useState(false)
     const [entityName, setEntityName] = useState('')
   return (
-    <div className="fixed bg-black bg-opacity-50 flex flex-col justify-center rounded-md z-50">
+    <div className="fixed bg-black bg-opacity-50 flex flex-col justify-center rounded-md z-50" style={{ top: y, left: x }}>
         <button className="text-white text-md font-semibold border-b border-b-slate-300 text-center py-2 px-3 cursor-pointer hover:bg-gray-800"
         onClick={() => {
             addEntityElement("atributo")
