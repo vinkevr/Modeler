@@ -23,6 +23,7 @@ const Project = () => {
   const [modalEntidad, setModalEntidad] = useState(false);
   const [modalTexto, setModalTexto] = useState(false);
   const [entidadInFocus, setEntidadInFocus] = useState({});
+  const [clickCoords, setClickCoords] = useState({ x: 0, y: 0 }); //para guardar coordenadas
   //Para tomar el tamaño del contenedor
   const canvasContainerRef = useRef(null);
   //Obtener el canvas
@@ -164,6 +165,7 @@ const addEntityElement = (tipo, txt = '') => {
     getFiguras();
     canvas.current.on("mouse:down", function (event) {
       const pointer = canvas.current.getPointer(event.e);
+      setClickCoords({ x: pointer.x, y: pointer.y });
       console.log(typeRef.current)
       if (typeRef.current == "identity") {
         //console.log("insertando");
@@ -660,10 +662,12 @@ const addEntityElement = (tipo, txt = '') => {
 
       <SidebarChat idRuta={id} />
       {
-        modalEntidad && <ModalAddAttribute  addEntityElement={addEntityElement}/>
+        modalEntidad && <ModalAddAttribute  addEntityElement={addEntityElement} x={clickCoords.x} 
+        y={clickCoords.y} />
       }
       {
-        modalTexto && <ModalAddTextAttribute setModalTexto={setModalTexto} addTextAttribute={addTextAttribute}/>
+        modalTexto && <ModalAddTextAttribute setModalTexto={setModalTexto} addTextAttribute={addTextAttribute} x={clickCoords.x} 
+        y={clickCoords.y}/>
       }
     </div>
   );

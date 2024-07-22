@@ -1,8 +1,8 @@
 import { useState } from "react"
-const ModalAddTextAttribute = ({setModalTexto, addTextAttribute}) => {
+const ModalAddTextAttribute = ({setModalTexto, addTextAttribute, x, y}) => {
     const [txt, setTxt] = useState('')
   return (
-    <div className="fixed bg-black bg-opacity-50 flex flex-col justify-center rounded-md z-50">
+    <div className="fixed bg-black bg-opacity-50 flex flex-col justify-center rounded-md z-50"  style={{ top: y, left: x }}>
         <input type="text"
         className="w-full border border-gray-300 px-6 py-3 rounded-lg focus:outline-none focus:outline-blue-500 focus:shadow-outline"
         placeholder="Nombre del atributo"
