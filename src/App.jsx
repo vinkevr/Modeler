@@ -1,6 +1,6 @@
 import { useContext} from 'react'
 import Index from './components/paginas/Index'
-import { Outlet, Route, Routes, useLocation, Navigate } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router';
 import Login from './components/paginas/Login'
 import CreateAccount from './components/paginas/CreateAccount'
 import Panel from './components/paginas/Panel';

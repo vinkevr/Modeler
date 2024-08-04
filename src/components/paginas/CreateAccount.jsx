@@ -1,8 +1,9 @@
 import React from 'react'
 import { useState } from 'react'
 import Fondo_slate from '../ui/Fondo_slate'
-import { NavLink, useLocation,Outlet, useNavigate } from 'react-router-dom'
+import { NavLink,Outlet, useNavigate } from 'react-router-dom'
 import { alertError, alertSuccess, alertWarning } from '../../helpers/alertas'
+import Spinner from '../ui/Spinner'
 
 
 
@@ -15,6 +16,7 @@ const CreateAccount = () => {
     password: '',
   })
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [loading, setLoading] = useState(false)
   const handleCreateAccount = async () => {
       if(Object.values(registro).includes('') || passwordConfirm === ''){
         alertWarning('Todos los campos son obligatorios!')
@@ -25,7 +27,7 @@ const CreateAccount = () => {
         return 
     }
     const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_USER}/crear`
-    console.log(url)
+    setLoading(!loading)
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -42,8 +44,8 @@ const CreateAccount = () => {
     , 2000)
   }else{
     alertError(data.error)
-  
   }
+  setLoading(false)
 }
 
   return (
@@ -103,11 +105,13 @@ const CreateAccount = () => {
         </div>
         </div>
 
-
         <div className='flex justify-center items-center font-semibold mt-10'>
-            <button className='bg-sky-900 text-white text-center px-16 py-3 rounded-xl shadow-2xl font-outfit hover:bg-sky-700 hover:text-white transition ease-in-out duration-300 '
-            onClick={handleCreateAccount}
-            >Crear cuenta</button>
+            {loading ? <Spinner /> : (
+              <button 
+              className='bg-sky-900 text-white text-center px-16 py-3 rounded-xl shadow-2xl font-outfit hover:bg-sky-700 hover:text-white transition ease-in-out duration-300 '
+              onClick={handleCreateAccount}
+              >Crear cuenta</button>
+            )}
         </div>
         <Outlet />
        <Fondo_slate />

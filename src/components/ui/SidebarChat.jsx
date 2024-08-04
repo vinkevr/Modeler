@@ -11,6 +11,7 @@ const SidebarChat = ({idRuta}) => {
     const [botonSeleccionado, setBotonSeleccionado] = useState(null);
     const [usuarios, setUsuarios] = useState([]);
     const [modalActivo, setModalActivo] = useState(false);
+    
     useEffect(() =>{
         const usuariosParticipantes = async () => {
           //Obtener los usuarios participantes en el proyecto
@@ -86,7 +87,7 @@ const SidebarChat = ({idRuta}) => {
             </div>
 
           
-            {botonSeleccionado === 'Chat' ? <Chat /> : ''}
+            {botonSeleccionado === 'Chat' ? <Chat idProject={idRuta}/> : ''}
             {botonSeleccionado === 'IA' ? <IA /> : ''}
       
            
