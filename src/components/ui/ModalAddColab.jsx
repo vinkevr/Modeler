@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { alertError, alertSuccess } from '../../helpers/alertas'
 import firebase from '../../firebase'
+import Spinner from '../ui/Spinner'
 const ModalAddColab = ({onClose, idRuta}) => {
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const handleSubmit = async () => {
     if(email === ''){
       alertError('El email no puede estar vacío')
     }
+    setLoading(true)
     const request = await fetch(`${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/user/agregar-colaborador`,{
       method: 'POST',
       headers: {
@@ -29,6 +32,7 @@ const ModalAddColab = ({onClose, idRuta}) => {
         email: response.email,
         nombre: response.nombre
       })
+      setLoading(false)
       onClose()
     }
     
@@ -55,11 +59,17 @@ const ModalAddColab = ({onClose, idRuta}) => {
 
        
         <div className='flex justify-around mr-16 ml-16 '>
+           {loading ? <Spinner /> 
+           : (
+            <>
             <button onClick={onClose} className="mt-4 px-14 py-3 bg-red-900 text-white rounded-lg hover:bg-red-800 ease-in-out transition duration-300 shadow-lg">Cancelar</button>
             <button  
             className="mt-4 px-10 py-3 bg-sky-900 text-white rounded-lg hover:bg-sky-800 ease-in-out transition duration-300 shadow-lg"
             onClick={handleSubmit}
             >Añadir al proyecto </button>
+            </>
+           )
+           }
         </div>
 
       </div>
