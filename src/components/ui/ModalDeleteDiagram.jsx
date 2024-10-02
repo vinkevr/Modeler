@@ -3,23 +3,23 @@ import { alertSuccess, alertError } from '../../helpers/alertas'
 const ModalDeleteDiagram = ({onClose, id, proyectos, setProyectos}) => {
   const handleSubmit = async () => {
     const token = localStorage.getItem('token')
-    const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/eliminar`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({id})
-    })
-    const data = await response.json()
-    if (data.hasOwnProperty('error')) {
-      alertError(data.error)
-    } else {
-      alertSuccess(data.mensaje)
-      setProyectos(proyectos.filter(proyecto => proyecto.id !== id))
-      onClose()
-    }
+      const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/eliminar`
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({id})
+      })
+      const data = await response.text()
+      if (response.ok) {
+        alertSuccess(data)
+        setProyectos(proyectos.filter(proyecto => proyecto.id !== id))
+        onClose()
+      }
+     else {alertError(data)}
+    
   }
   return (
     <div>

@@ -35,16 +35,15 @@ const CreateAccount = () => {
       },
       body: JSON.stringify(registro),
     })
-    const data = await response.json()
-    if(!data.hasOwnProperty('error')){
-      alertSuccess(data.mensaje)
-    setTimeout(() => {
-      navigate('/verify')
+    const data = await response.text()
+    if(response.ok){
+      alertSuccess(data)
+      setTimeout(() => {
+        navigate('/verify')
+      }
+      , 2000)
     }
-    , 2000)
-  }else{
-    alertError(data.error)
-  }
+   else alertError(data)
   setLoading(false)
 }
 

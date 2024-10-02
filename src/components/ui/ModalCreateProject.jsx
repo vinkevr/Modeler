@@ -10,26 +10,26 @@ const ModalCreateProject = ({ onClose, setProyectos, proyectos }) => {
       return
     }
     const token = localStorage.getItem('token')
-    const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/crear`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        nombre: nombreProyecto,
-        usuarioCreador:user.id
+      const url = `${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_RUTAS}/crear`
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          nombre: nombreProyecto,
+          usuarioCreador:user.id
+        })
       })
-    })
-    const data = await response.json()
-    if (data.hasOwnProperty('error')) {
-      alertError(data.error)
-    } else {
-      alertSuccess(data.mensaje)
-      setProyectos([...proyectos, {id:data.id, nombre:data.nombre, usuarioCreador:data.usuarioCreador}])
-      onClose()
-    }
+      const data = response.ok ? await response.json() : await response.text()
+      if(response.ok){
+          alertSuccess('Proyecto creado correctamente')
+          setProyectos([...proyectos, {id:data.id, nombre:data.nombre, usuarioCreador:data.usuarioCreador}])
+          onClose()
+        }
+       else alertError(data)
+    
   }
   return (
     <div>

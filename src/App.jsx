@@ -25,7 +25,7 @@ const {user} = useContext(UserContext);
           <Route path="panel" element = {user.verificado ?  <Panel />: <Navigate to="/login"/>} />
           <Route path="project/:id" element = {user.verificado ?  <Project />: <Navigate to="/login"/>}/>
           <Route path="recover" element = {<RecoverPassword />}/>
-          <Route path="reset" element = {<ResetPassword />}/>
+          <Route path="reset/:id" element = {<ResetPassword />}/>
           <Route path="recovermess" element = {<RecoverPassMessage />}/>
           <Route path="verify" element = {<VerifyEmail />}/>
           <Route path="verified/:token" element = {<AccountVerified />}/>

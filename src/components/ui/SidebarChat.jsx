@@ -23,8 +23,13 @@ const SidebarChat = ({idRuta}) => {
         },
         body: JSON.stringify({id:idRuta})
     })
-    const usuariosP = await request.json()
+    const usuariosP = request.ok ? await request.json() : await request.text()
+    if(request.ok){
     setUsuarios(usuariosP)
+    }
+    else{
+      alertError(usuariosP)
+    }
   }
       usuariosParticipantes()
     }, [])

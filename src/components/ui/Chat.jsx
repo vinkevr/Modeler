@@ -22,8 +22,6 @@ const Chat = ({ idProject }) => {
       const response = await fetch(url);
       const data = await response.json();
       setMessages(data);
-      console.log('Mensajes obtenidos de la bd');
-      console.log(data);
     };
     GetMessages();
 
@@ -71,7 +69,7 @@ const Chat = ({ idProject }) => {
           }
         })}
       </div>
-      <div className='flex'>
+      <form className='flex'>
         <input
           className='ml-5 w-4/5 h-5/6 shadow-lg border border-gray-300 px-6 py-3 rounded-lg focus:outline-none focus:outline-blue-500 focus:shadow-outline'
           onChange={(e) => setNewMessage(e.target.value)}
@@ -83,7 +81,7 @@ const Chat = ({ idProject }) => {
         >
           <img src={send} className='h-8 w-8' />
         </button>
-      </div>
+      </form>
     </>
   );
 };

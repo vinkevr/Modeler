@@ -18,13 +18,14 @@ const ModalAddColab = ({onClose, idRuta}) => {
       },
       body: JSON.stringify({emailUsuario:email, idRuta})
     })
-    const response = await request.json()
-    if(response.error){
-      alertError(response.error)
+    const response = request.ok ? await request.json() : await request.text()
+    setLoading(false)
+    onClose()
+    if(!request.ok){
+      alertError(response)
     }else{
-      alertSuccess(response.mensaje)
+      alertSuccess('Colaborador añadido correctamente')
       //Agrear al usuario en firebase
-      console.log("agregando en firebase")
       await firebase.db.collection("usuariosEnProyectos").add({
         idProyecto: idRuta,
         idUsuario: response.idUsuario,
@@ -32,8 +33,6 @@ const ModalAddColab = ({onClose, idRuta}) => {
         email: response.email,
         nombre: response.nombre
       })
-      setLoading(false)
-      onClose()
     }
     
   }

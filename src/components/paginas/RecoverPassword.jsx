@@ -1,8 +1,34 @@
-import React from 'react'
+import {useState} from 'react'
 import Fondo_slate from '../ui/Fondo_slate'
-import { NavLink, useLocation,Outlet } from 'react-router-dom'
-
+import { NavLink, useNavigate,Outlet } from 'react-router-dom'
+import { alertWarning } from '../../helpers/alertas'
+import Spinner from '../ui/Spinner';
 const RecoverPassword = () => {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const handleRecoverPassword = async () => {
+    if(email === ''){
+      alertWarning('Todos los campos son obligatorios!')
+      return
+    }
+    setLoading(true)
+  const response = await fetch(`${import.meta.env.VITE_URL_API}${import.meta.env.VITE_URL_USER}/recover`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({email}),
+  })
+  if(response.ok){
+    setTimeout(() => {
+      navigate('/recovermess')
+    })
+  }else{
+    alertWarning('No se pudo enviar el correo')
+  }
+  setLoading(false)
+}
   return (
     <div>
         <div className='text-white text-center text-7xl mt-16 font-pragati'>
@@ -27,7 +53,14 @@ const RecoverPassword = () => {
 
 
         <div className='flex justify-center items-center font-semibold mt-12'>
-            <button className='bg-sky-900 text-white text-center px-16 py-3 rounded-xl shadow-2xl font-outfit  hover:bg-sky-700 hover:text-white transition ease-in-out duration-300 '>Recuperar contraseña</button>
+            {
+              loading ? <Spinner /> : 
+              <button 
+              className='bg-sky-900 text-white text-center px-16 py-3 rounded-xl shadow-2xl font-outfit  hover:bg-sky-700 hover:text-white transition ease-in-out duration-300 '
+              onClick={handleRecoverPassword}
+              >Recuperar contraseña</button>
+            }
+            
         </div>
 
         <Outlet />
