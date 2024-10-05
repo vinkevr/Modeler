@@ -33,7 +33,7 @@ const Login = () => {
       navigate('/panel')
     }
     else{
-      alertError('Usuario o contraseña incorrectos')
+      alertError(data.error)
     }
   }
   return (
