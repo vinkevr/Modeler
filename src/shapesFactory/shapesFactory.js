@@ -1,7 +1,8 @@
 import {create as createIden} from '../shapesStrategy/identity.js';
 import {create as createEllipse} from '../shapesStrategy/attribute.js';
+import {create as createText} from '../shapesStrategy/text.js';
 const factory = (type, pointer, canvas, setModal = null, others = null) =>{
-    console.log("entra a factory con type: ", type);
+    
     switch(type){
         case "identity":
             return createIden(pointer, canvas, setModal);
@@ -10,7 +11,7 @@ const factory = (type, pointer, canvas, setModal = null, others = null) =>{
             return createEllipse(pointer, canvas, setModal, others);
             break
         case  "text":
-           return "es un text";
+           return createText(pointer, canvas, others);
            break
         default:
             return null;

@@ -1,31 +1,27 @@
 import { fabric } from "fabric";
-
-export function create(draw=null, points=[], update=false) {
+import { updateInFirebase, saveInFirebase } from "../helpers/transactionsWithFirebase.js";
+export function create(points=[], canvas) {
             //it is a new element on the canvas
-            arrow =  new fabric.Line(points, config)
-            idEl = `${Date.now()}-${Math.floor(Math.random()*100)}`
-            elementsInCanvas[idEl] = {...config, id:idEl, type:'arrow', coor:points, idProyecto:id}
-            saveInFirebase(elementsInCanvas[idEl])
+            const config = {
+              stroke: "#ddd",
+              strokeWidth: 5
+          }
+            let arrow =  new fabric.Line(points, config)
+            const idEl = `${Date.now()}-${Math.floor(Math.random()*100)}`
+           // elementsInCanvas[idEl] = {...config, id:idEl, type:'arrow', coor:points, idProyecto:id}
+            //saveInFirebase(elementsInCanvas[idEl])
             canvas.current.add(arrow)
-            arrow.on('mouseup', ()=>{
-              //Update in firebase
-              let left = arrow.left;
-              let top = arrow.top;
-              updateInFirebase(elementsInCanvas[idEl], {top, left})
-          })
-          arrow.on('scaling', ()=>{
-              let scaleX = arrow.scaleX 
-              let scaleY = arrow.scaleY
-              updateInFirebase(elementsInCanvas[idEl], {scaleX, scaleY})
-            })
             arrow.on('modified', ()=> {
               const angle = arrow.angle
-              updateInFirebase(elementsInCanvas[idEl], {angle})
+              let left = arrow.left;
+              let top = arrow.top;
+              let scaleX = arrow.scaleX 
+              let scaleY = arrow.scaleY
+             // updateInFirebase(elementsInCanvas[idEl], {angle, top, left, scaleX, scaleY})
             });
           arrow.on('mousedblclick', ()=>{
-              deleteInFirebase(elementsInCanvas[idEl])
+           //   deleteInFirebase(elementsInCanvas[idEl])
           })
-          canvas.current.add(arrow);
 }
 
 export function update(draw=null,points=[], update=false) {

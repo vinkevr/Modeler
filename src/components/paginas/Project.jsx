@@ -1,20 +1,17 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import UserContext from "../../context/UserContext";
-import firebase from "../../firebase";
 import select from "../../images/select.png";
-import text from "../../images/text.png";
-import newicon from "../../images/new.png";
 import shape from "../../images/shape.png";
 import arrow from "../../images/Arrow.png";
-import redo from "../../images/redo.png";
 
 import SidebarChat from "../ui/SidebarChat";
 import { fabric } from "fabric";
 import ModalAddAttribute from "../ui/ModalAddAttribute";
 import ModalAddTextAttribute from "../ui/ModalAddTextAttribute";
 import factory from "../../shapesFactory/shapesFactory";
-
+import  opcionesEntidad  from "../../helpers/opcionesEntidad.js";
+import { create as createArrow } from "../../shapesStrategy/arrow.js";
 const Project = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
@@ -52,17 +49,13 @@ const Project = () => {
     setModalTexto(false);
   };
   const addEntityElement = (type, txt = "") => {
-    typeRef.current = "ellipse";
-    attributeConfig.current = type;
-    //factory(typeRef.current, clickCoords, canvas, setModalEntidad, type);
-    /*if(tipo === opcionesEntidad.RELACION){
-  }
-  if(tipo === opcionesEntidad.TXT){
-    typeRef.current = "text";
-    attributeTextRef.current = txt;
-    console.log(typeRef.current)
-   // createText(null, entidadInFocus.top, entidadInFocus.left, txt);
-  }*/
+    if (type.type === opcionesEntidad.TXT.type) {
+      typeRef.current = "text";
+      attributeTextRef.current = txt;
+    } else {
+      typeRef.current = "ellipse";
+      attributeConfig.current = type;
+    }
     setModalEntidad(false);
     setEntidadInFocus({});
   };
@@ -83,44 +76,39 @@ const Project = () => {
     // getFiguras();
     canvas.current.on("mouse:down", function (event) {
       const pointer = canvas.current.getPointer(event.e);
-      setClickCoords({ x: pointer.x, y: pointer.y });
-      let modal = typeRef.current === "ellipse" ? setModalTexto : setModalEntidad;
-      let options = typeRef.current === "ellipse" ? attributeConfig.current : null;
-      factory(typeRef.current, pointer, canvas, modal, options);
-      typeRef.current = "";
-      setMenuFocus(1);
 
-      /*      else if(typeRef.current == "ellipse"){
-        createAttribute(null, pointer.x, pointer.y);
-        typeRef.current = "";
-        setMenuFocus(1);
-       
-      }else if(typeRef.current == "arrow"){
+      if (typeRef.current == "arrow") {
         ++dbl_click;
-      
-        if(dbl_click == 1){
+
+        if (dbl_click == 1) {
           puntosArrow.x1 = pointer.x;
           puntosArrow.y1 = pointer.y;
         }
-        if(dbl_click == 2){
+        if (dbl_click == 2) {
           puntosArrow.x2 = pointer.x;
           puntosArrow.y2 = pointer.y;
-          drawArrow(null,Object.values(puntosArrow));
+          createArrow(Object.values(puntosArrow), canvas);
           dbl_click = 0;
           typeRef.current = "";
           setMenuFocus(1);
-        } 
-        
-       
-      }
-      else if(typeRef.current == "text"){
-        createText(null, pointer.x, pointer.y, attributeTextRef.current)
+        }
+      } else if (typeRef.current != null) {
+        setClickCoords({ x: pointer.x, y: pointer.y });
+        let modal =
+          typeRef.current === "ellipse" ? setModalTexto : setModalEntidad;
+        let options =
+          typeRef.current === "ellipse"
+            ? attributeConfig.current
+            : typeRef.current === "text"
+            ? attributeTextRef.current
+            : null;
+        factory(typeRef.current, pointer, canvas, modal, options);
         typeRef.current = "";
         setMenuFocus(1);
-      }*/
+      }
     });
 
-    // Maneja el evento d para hacer zoom
+    // Maneja el evento para hacer zoom
     const handleWheel = (event) => {
       const delta = event.e.deltaY;
       let zoom = canvas.current.getZoom();
@@ -160,15 +148,6 @@ const Project = () => {
     };
   }, []);
 
-  const createText = (
-    draw = null,
-    x = null,
-    y = null,
-    texto = null,
-    update = false
-  ) => {};
-  const drawArrow = (draw = null, points = [], update = false) => {};
-
   return (
     <div
       className="bg-zinc-800 w-full h-screen flex justify-between overflow-x-hidden"
@@ -201,7 +180,7 @@ const Project = () => {
                   menuFocus === 2 ? "link-activo" : ""
                 }`}
               >
-                <img src={redo} className="mb-5 h-5 w-8" />
+                <img src={arrow} className="mb-5 h-5 w-8" />
               </button>
             }
 

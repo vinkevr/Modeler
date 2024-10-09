@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
-
+import { updateInFirebase, saveInFirebase } from "../helpers/transactionsWithFirebase.js";
 export function create(points, canvas, setModalTexto, type) {
-console.log("create attribute");
+
   const config = {
     rx: 50, // Radio horizontal (mitad del ancho)
     ry: 30, // Radio vertical (mitad de la altura)
@@ -11,7 +11,7 @@ console.log("create attribute");
   };
 
   const idEl = `${Date.now()}-${Math.floor(Math.random() * 100)}`;
-  const circ = new fabric.Ellipse({ ...config, id: idEl });
+  let circ = new fabric.Ellipse({ ...config, id: idEl });
  /* elementsInCanvas[idEl] = {
     ...config,
     idFigura: idEl,

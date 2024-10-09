@@ -1,8 +1,21 @@
 import { fabric } from "fabric";
-export function create(draw = null, x = null, y = null, texto=null, update=false) {
-    idEl = `${Date.now()}-${Math.floor(Math.random() * 100)}`;
-    txt = new fabric.IText(texto, {...config, id: idEl});
-    elementsInCanvas[idEl] = {
+import { updateInFirebase, saveInFirebase } from "../helpers/transactionsWithFirebase.js";
+export function create(points, canvas, texto) {
+
+    const idEl = `${Date.now()}-${Math.floor(Math.random() * 100)}`;
+    const config = {
+      originX: "center",
+      originY: "center",
+      stroke: "#FFF",
+      fill: "#FFF",
+      fontSize: 35,
+      fontFamily: "Outfit",
+      left: points.x,
+      top: points.y
+    };
+    let txt = new fabric.IText(texto, {...config, id: idEl});
+    canvas.current.add(txt);
+   /* elementsInCanvas[idEl] = {
       ...config,
       id: idEl,
       type: "text",
@@ -14,28 +27,16 @@ export function create(draw = null, x = null, y = null, texto=null, update=false
       type: "text",
       idProyecto: id,
       text: texto,
-    });
+    });*/
 
-    canvas.current.add(txt);
-    txt.on("mouseup", () => {
-      //Update in firebase
-      let left = txt.left;
-      let top = txt.top;
-      updateInFirebase(elementsInCanvas[idEl], {top, left})
-   });
-    //Update for the new text
     txt.on("modified", () => {
       const modified = txt.text;
-      updateInFirebase(elementsInCanvas[idEl], {text:modified})
-    });
-    txt.on("scaling", () => {
+      let left = txt.left;
+      let top = txt.top;
       let scaleX = txt.scaleX;
       let scaleY = txt.scaleY;
-      updateInFirebase(elementsInCanvas[idEl], {scaleX, scaleY})
-    });
-    txt.on("modified", () => {
       const angle = txt.angle;
-      updateInFirebase(elementsInCanvas[idEl], {angle})
+      //updateInFirebase(elementsInCanvas[idEl], {text:modified, scaleX, scaleY, angle, top, left})
     });
 }
 
