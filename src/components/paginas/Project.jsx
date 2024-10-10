@@ -87,7 +87,7 @@ const Project = () => {
         if (dbl_click == 2) {
           puntosArrow.x2 = pointer.x;
           puntosArrow.y2 = pointer.y;
-          createArrow(Object.values(puntosArrow), canvas);
+          createArrow(Object.values(puntosArrow), canvas, user.id, id);
           dbl_click = 0;
           typeRef.current = "";
           setMenuFocus(1);
@@ -102,7 +102,7 @@ const Project = () => {
             : typeRef.current === "text"
             ? attributeTextRef.current
             : null;
-        factory(typeRef.current, pointer, canvas, modal, options);
+        factory(typeRef.current, pointer, canvas, modal, options, user.id, id);
         typeRef.current = "";
         setMenuFocus(1);
       }

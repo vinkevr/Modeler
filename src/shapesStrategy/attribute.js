@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import { updateInFirebase, saveInFirebase } from "../helpers/transactionsWithFirebase.js";
-export function create(points, canvas, setModalTexto, type) {
+export function create(points, canvas, setModalTexto, type, userId, idProject) {
 
   const config = {
     rx: 50, // Radio horizontal (mitad del ancho)
@@ -12,12 +12,12 @@ export function create(points, canvas, setModalTexto, type) {
 
   const idEl = `${Date.now()}-${Math.floor(Math.random() * 100)}`;
   let circ = new fabric.Ellipse({ ...config, id: idEl });
- /* elementsInCanvas[idEl] = {
+ var elementToFirebase = {
     ...config,
-    idFigura: idEl,
+    idShape: idEl,
     type: "ellipse",
-    idProyecto: id,
-  };*/
+    userCreator: userId 
+  };
 
   canvas.current.add(circ);
   circ.on("modified", () => {
@@ -26,19 +26,17 @@ export function create(points, canvas, setModalTexto, type) {
     let scaleY = circ.scaleY;
     let left = circ.left;
     let top = circ.top;
-    //updateInFirebase({...elementsInCanvas[idEl]}, { scaleX, scaleY, angle, top, left });
+    updateInFirebase(elementToFirebase, { scaleX, scaleY, angle, top, left });
   });
   circ.on("mousedblclick", () => {
     //setEntidadInFocus(elementsInCanvas[idEl]);
     //Abrir modal para agregar atributos
     setModalTexto(true);
   });
- /* saveInFirebase({
-    ...config,
-    idFigura: idEl,
-    type: "ellipse",
-    idProyecto: id,
-  });*/
+ saveInFirebase({
+    ...elementToFirebase,
+    idProyecto: idProject,
+  });
 }
 
 export function update() {
@@ -51,39 +49,21 @@ export function update() {
     left: x,
   };
   let circ;
-  if (update && canvas.current) {
-    console.log("Actualizando elemento");
-    canvas.current.getObjects().forEach((obj) => {
-      const { id, idFigura, idProyecto, ...figure } = draw;
-      if (obj.id === idFigura) {
-        obj.set(figure);
-        canvas.current.requestRenderAll();
-      }
-    });
-  } else {
     const { idFigura, type, idProyecto, ...figure } = draw;
     elementsInCanvas[idFigura] = { ...figure, idFigura, type, idProyecto };
     circ = new fabric.Ellipse(figure);
     canvas.current.add(circ);
-    circ.on("mouseout", () => {
-      //Update in firebase
-      let left = circ.left;
-      let top = circ.top;
-      updateInFirebase({ ...elementsInCanvas[idFigura] }, { top, left });
-    });
-    circ.on("scaling", () => {
-      let scaleX = circ.scaleX;
-      let scaleY = circ.scaleY;
-      updateInFirebase({ ...elementsInCanvas[idFigura] }, { scaleX, scaleY });
-    });
     circ.on("modified", () => {
       const angle = circ.angle;
-      updateInFirebase({ ...elementsInCanvas[idFigura] }, { angle });
+      let scaleX = circ.scaleX;
+      let scaleY = circ.scaleY;
+      let left = circ.left;
+      let top = circ.top;
+      updateInFirebase(elementToFirebase, { scaleX, scaleY, angle, top, left });
     });
     circ.on("mousedblclick", () => {
       //setEntidadInFocus(elementsInCanvas[idEl]);
       //Abrir modal para agregar atributos
       setModalTexto(true);
     });
-  }
 }
