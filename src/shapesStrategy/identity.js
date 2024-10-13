@@ -38,20 +38,57 @@ export function create(points, canvas, setModalEntidad, userId, idProject) {
 }
 
 export function update(element, canvas, modal) {
-
-const { idShape, type, idProyecto, userCreator, ...figure } = element;
-  let rect = new fabric.Rect({...figure, id: idShape});
-  canvas.current.add(rect);
-  rect.on("modified", () => {
-    let angle = rect.angle;
-    let scaleX = rect.scaleX;
-    let scaleY = rect.scaleY;
-    let left = rect.left;
-    let top = rect.top;
-    updateInFirebase(element, { scaleX, scaleY, angle, top, left });
-  });
-  rect.on("mousedblclick", () => {
-    //Abrir modal para agregar atributos
-    modal(true);
-  });
-}
+    const { idShape, type, idProyecto, userCreator, ...figure } = element;
+  
+    // Busca el objeto existente en el canvas usando el idShape
+    let rect = canvas.current.getObjects().find(obj => obj.id === idShape);
+  
+    if (rect) {
+      // Si existe, actualiza sus propiedades
+      rect.set({
+        left: figure.left,
+        top: figure.top,
+        scaleX: figure.scaleX,
+        scaleY: figure.scaleY,
+        angle: figure.angle,
+      });
+  
+      // Renderiza el canvas para reflejar los cambios
+      canvas.current.renderAll();
+  
+      // Asigna los eventos si es necesario
+      rect.on("modified", () => {
+        let angle = rect.angle;
+        let scaleX = rect.scaleX;
+        let scaleY = rect.scaleY;
+        let left = rect.left;
+        let top = rect.top;
+        updateInFirebase(element, { scaleX, scaleY, angle, top, left });
+      });
+  
+      rect.on("mousedblclick", () => {
+        // Abrir modal para agregar atributos
+        modal(true);
+      });
+    } else {
+      // Si no existe el objeto, crea uno nuevo
+      let newRect = new fabric.Rect({ ...figure, id: idShape });
+      canvas.current.add(newRect);
+      canvas.current.renderAll();
+  
+      newRect.on("modified", () => {
+        let angle = newRect.angle;
+        let scaleX = newRect.scaleX;
+        let scaleY = newRect.scaleY;
+        let left = newRect.left;
+        let top = newRect.top;
+        updateInFirebase(element, { scaleX, scaleY, angle, top, left });
+      });
+  
+      newRect.on("mousedblclick", () => {
+        // Abrir modal para agregar atributos
+        modal(true);
+      });
+    }
+  }
+  

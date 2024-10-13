@@ -39,31 +39,54 @@ export function create(points, canvas, setModalTexto, type, userId, idProject) {
   });
 }
 
-export function update() {
+export function update(element, canvas, modal) {
+  const { idShape, type, idProyecto, userCreator, ...figure } = element;
+  let circ = canvas.current.getObjects().find(obj => obj.id === idShape);
   let idEl = "";
-  const config = {
-    rx: 50, // Radio horizontal (mitad del ancho)
-    ry: 30, // Radio vertical (mitad de la altura)
-    fill: attributeColorRef.current,
-    top: y,
-    left: x,
-  };
-  let circ;
-    const { idFigura, type, idProyecto, ...figure } = draw;
-    elementsInCanvas[idFigura] = { ...figure, idFigura, type, idProyecto };
-    circ = new fabric.Ellipse(figure);
-    canvas.current.add(circ);
+  if (circ) {
+    // Si existe, actualiza sus propiedades
+    circ.set({
+      left: figure.left,
+      top: figure.top,
+      scaleX: figure.scaleX,
+      scaleY: figure.scaleY,
+      angle: figure.angle,
+    });
+
+    // Renderiza el canvas para reflejar los cambios
+    canvas.current.renderAll();
+
+    // Asigna los eventos si es necesario
     circ.on("modified", () => {
-      const angle = circ.angle;
+      let angle = circ.angle;
       let scaleX = circ.scaleX;
       let scaleY = circ.scaleY;
       let left = circ.left;
       let top = circ.top;
-      updateInFirebase(elementToFirebase, { scaleX, scaleY, angle, top, left });
+      updateInFirebase(element, { scaleX, scaleY, angle, top, left });
     });
+
     circ.on("mousedblclick", () => {
-      //setEntidadInFocus(elementsInCanvas[idEl]);
       //Abrir modal para agregar atributos
-      setModalTexto(true);
+      modal(true);
     });
+  }
+  else{
+  
+      let newCirc = new fabric.Ellipse({...figure, id: idShape});
+      canvas.current.add(newCirc);
+      canvas.current.renderAll();
+      newCirc.on("modified", () => {
+        const angle = newCirc.angle;
+        let scaleX = newCirc.scaleX;
+        let scaleY = newCirc.scaleY;
+        let left = newCirc.left;
+        let top = newCirc.top;
+        updateInFirebase(element, { scaleX, scaleY, angle, top, left });
+      });
+      newCirc.on("mousedblclick", () => {
+        //Abrir modal para agregar atributos
+        modal(true);
+      });
+  }
 }

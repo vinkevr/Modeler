@@ -11,7 +11,7 @@ export const updateInFirebase = async (element, data) => {
   //Obtener el id del documento en la colección
   await firebase.db
     .collection("proyectos")
-    .where("idShape", "==", element.idFigura)
+    .where("idShape", "==", element.idShape)
     .get()
     .then((querySnapshot) => {
       //console.log(querySnapshot)
@@ -27,7 +27,6 @@ export const updateInFirebase = async (element, data) => {
 //Obtener las figuras guardas en el canvas de firebase
 export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEntidad, setModalTexto) => {
 
-  if (canvas.current.getObjects().length == 0) {
     await firebase.db
       .collection("proyectos")
       .where("idProyecto", "==", proyectoId)
@@ -36,6 +35,7 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         querySnapshot.forEach((doc) => {
           if (doc.data().type !== "text") {
             let data = doc.data();
+            console.log(data)
             let modal = data.type === "process" ? setModalEntidad : setModalTexto;
             factory(`${data.type}-u`, data, canvas, modal);
           } 
@@ -44,12 +44,11 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         querySnapshot.forEach((doc) => {
           let data = doc.data();
           if (data.type === "text") {
-            factory(`${data.type}-u`, data, canvas, modal);
+            factory(`${data.type}-u`, data, canvas, null);
           }
         });
       });
-  }
-
+  
   //Cambios en el canvas para actualizar las figuras a los demas usuarios
   await firebase.db
     .collection("proyectos")
@@ -60,6 +59,7 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         //Pintar el agregado solo a los usuarios que son diferentes al que lo creo
         if (change.type === "added") {
           const data = change.doc.data();
+          let modal = data.type === "process" ? setModalEntidad : setModalTexto;
           if ( data.userCreator !== userId) 
           {
             factory(`${data.type}-u`, data, canvas, modal);
@@ -67,16 +67,21 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         }
         if (change.type === "modified") {
           const data = change.doc.data();
-          if ( data.userCreator !== userId) 
-          {
+          console.log("se modifico", data.idShape);
             //buscar el objeto en el canvas
             const obj = canvas.current.getObjects().find((obj) => obj.id === data.idShape);
             if (obj) {
-              obj.set(data);
-              canvas.current.renderAll();
+              obj.left = data.left; // Asignar directamente
+              obj.top = data.top;
+              obj.angle = data.angle;
+              obj.scaleX = data.scaleX;
+              obj.scaleY = data.scaleY;
             }
-          }
+            canvas.current.renderAndReset();
+          
         }
       });
+    },  (error) => {
+      console.error("Error en el listener onSnapshot:", error);
     });
 };

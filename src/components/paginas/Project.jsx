@@ -12,6 +12,7 @@ import ModalAddTextAttribute from "../ui/ModalAddTextAttribute";
 import factory from "../../shapesFactory/shapesFactory";
 import  opcionesEntidad  from "../../helpers/opcionesEntidad.js";
 import { create as createArrow } from "../../shapesStrategy/arrow.js";
+import {getFigurasFirstTime} from "../../helpers/transactionsWithFirebase.js";
 const Project = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
@@ -73,7 +74,7 @@ const Project = () => {
       selection: true,
     });
 
-    // getFiguras();
+    getFigurasFirstTime(canvas, id, user.id, setModalEntidad, setModalTexto);
     canvas.current.on("mouse:down", function (event) {
       const pointer = canvas.current.getPointer(event.e);
 

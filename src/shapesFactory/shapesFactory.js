@@ -19,6 +19,7 @@ const factory = (
   userId = null,
   idProject = null
 ) => {
+    console.log(type)
   switch (type) {
     case "identity":
       return createIden(pointer, canvas, setModal, userId, idProject);
@@ -37,7 +38,7 @@ const factory = (
       return createText(pointer, canvas, others, userId, idProject);
       break;
 
-    case "identity-u":
+    case "process-u":
       return updateIden(pointer, canvas, setModal);
       break;
     case "ellipse-u":
