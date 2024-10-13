@@ -47,40 +47,61 @@ export function create(points, canvas, texto, userId, idProject) {
   });
 }
 
-export function update(elemen) {
-  let idEl = "";
-  const config = {
-    originX: "center",
-    originY: "center",
-    stroke: "#FFF",
-    fill: "#FFF",
-    fontSize: 35,
-    fontFamily: "Outfit",
-    left: x,
-    top: y,
-  };
-  let txt;
-  //Solo se entra cuando es la primera vez que se entra al proyecto
-  const { idFigura, type, text, idProyecto, ...figure } = draw;
-  idEl = idFigura;
-  txt = new fabric.IText(text, figure);
-  elementsInCanvas[idFigura] = { ...figure, idFigura, type, text, idProyecto };
-
-  txt.on("modified", () => {
-    const modified = txt.text;
-    let left = txt.left;
-    let top = txt.top;
-    let scaleX = txt.scaleX;
-    let scaleY = txt.scaleY;
-    const angle = txt.angle;
-    updateInFirebase(elementToFirebase, {
-      text: modified,
-      scaleX,
-      scaleY,
-      angle,
-      top,
-      left,
+export function update(element, canvas) {
+  const { idShape, type, idProyecto, userCreator, ...figure } = element;
+  
+  // Busca el objeto existente en el canvas usando el idShape
+  let txt = canvas.current.getObjects().find(obj => obj.id === idShape);
+  if(txt){
+    txt.set({
+      left: figure.left,
+      top: figure.top,
+      scaleX: figure.scaleX,
+      scaleY: figure.scaleY,
+      angle: figure.angle,
+      text: figure.text,
     });
-  });
-  canvas.current.add(txt);
+    if(canvas.current)canvas.current.renderAll();
+    txt.on("modified", () => {
+      const modified = txt.text;
+      let left = txt.left;
+      let top = txt.top;
+      let scaleX = txt.scaleX;
+      let scaleY = txt.scaleY;
+      const angle = txt.angle;
+      updateInFirebase(elementToFirebase, {
+        text: modified,
+        scaleX,
+        scaleY,
+        angle,
+        top,
+        left,
+      });
+    });
+  }
+  else{
+   let newTxt = new fabric.IText({...figure, id: idShape});
+   
+   if(canvas.current){
+    canvas.current.add(newTxt);
+    canvas.current.renderAll();
+  }
+    newTxt.on("modified", () => {
+      const modified = newTxt.text;
+      let left = newTxt.left;
+      let top = newTxt.top;
+      let scaleX = newTxt.scaleX;
+      let scaleY = newTxt.scaleY;
+      const angle = newTxt.angle;
+      updateInFirebase(element, {
+        text: modified,
+        scaleX,
+        scaleY,
+        angle,
+        top,
+        left,
+      });
+    });
+    canvas.current.add(newTxt);
+  }
 }

@@ -38,12 +38,14 @@ export function create(points, canvas, setModalEntidad, userId, idProject) {
 }
 
 export function update(element, canvas, modal) {
+
     const { idShape, type, idProyecto, userCreator, ...figure } = element;
   
     // Busca el objeto existente en el canvas usando el idShape
     let rect = canvas.current.getObjects().find(obj => obj.id === idShape);
   
     if (rect) {
+      console.log("existe");
       // Si existe, actualiza sus propiedades
       rect.set({
         left: figure.left,
@@ -54,7 +56,7 @@ export function update(element, canvas, modal) {
       });
   
       // Renderiza el canvas para reflejar los cambios
-      canvas.current.renderAll();
+      if(canvas.current)canvas.current.renderAll();
   
       // Asigna los eventos si es necesario
       rect.on("modified", () => {
@@ -63,6 +65,7 @@ export function update(element, canvas, modal) {
         let scaleY = rect.scaleY;
         let left = rect.left;
         let top = rect.top;
+        console.log("modificado");
         updateInFirebase(element, { scaleX, scaleY, angle, top, left });
       });
   
@@ -71,10 +74,15 @@ export function update(element, canvas, modal) {
         modal(true);
       });
     } else {
+      console.log("no existe");
       // Si no existe el objeto, crea uno nuevo
       let newRect = new fabric.Rect({ ...figure, id: idShape });
-      canvas.current.add(newRect);
-      canvas.current.renderAll();
+      
+      if(canvas.current){
+        canvas.current.add(newRect);
+        canvas.current.renderAll();
+      }
+
   
       newRect.on("modified", () => {
         let angle = newRect.angle;

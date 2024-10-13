@@ -1,5 +1,5 @@
 import { useState } from "react";
-import opcionesEntidad  from "../../helpers/opcionesEntidad.js";
+import opcionesEntidad  from "../../helpers/constants/opcionesEntidad.js";
 
 const ModalAddAttribute = ({ addEntityElement, x, y }) => {
   const [showModal, setShowModal] = useState(false);

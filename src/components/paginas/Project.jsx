@@ -10,24 +10,22 @@ import { fabric } from "fabric";
 import ModalAddAttribute from "../ui/ModalAddAttribute";
 import ModalAddTextAttribute from "../ui/ModalAddTextAttribute";
 import factory from "../../shapesFactory/shapesFactory";
-import  opcionesEntidad  from "../../helpers/opcionesEntidad.js";
+import  opcionesEntidad  from "../../helpers/constants/opcionesEntidad.js";
 import { create as createArrow } from "../../shapesStrategy/arrow.js";
 import {getFigurasFirstTime} from "../../helpers/transactionsWithFirebase.js";
+import SHAPES from "../../helpers/constants/shapes.js";
 const Project = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [menuFocus, setMenuFocus] = useState(1);
   const [modalEntidad, setModalEntidad] = useState(false);
   const [modalTexto, setModalTexto] = useState(false);
-  const [entidadInFocus, setEntidadInFocus] = useState({});
   const [clickCoords, setClickCoords] = useState({ x: 0, y: 0 }); //para guardar coordenadas
   //Para tomar el tamaño del contenedor
   const canvasContainerRef = useRef(null);
   //Obtener el canvas
   const canvas = useRef(null);
 
-  //verificar los elementos que se crean
-  let elementsInCanvas = [];
   //nuestra etiqeuta de canvas
   const canvasRef = useRef(null);
   //El tipo de figura que se va agregar al lienzo
@@ -45,20 +43,19 @@ const Project = () => {
     y2: "",
   };
   const addTextAttribute = (txt) => {
-    typeRef.current = "text";
+    typeRef.current = SHAPES.TEXT;
     attributeTextRef.current = txt;
     setModalTexto(false);
   };
   const addEntityElement = (type, txt = "") => {
     if (type.type === opcionesEntidad.TXT.type) {
-      typeRef.current = "text";
+      typeRef.current = SHAPES.TEXT;
       attributeTextRef.current = txt;
     } else {
-      typeRef.current = "ellipse";
+      typeRef.current = SHAPES.ATTRIBUTE;
       attributeConfig.current = type;
     }
     setModalEntidad(false);
-    setEntidadInFocus({});
   };
   useEffect(() => {
     // Obtiene el contenedor del canvas
@@ -74,11 +71,10 @@ const Project = () => {
       selection: true,
     });
 
-    getFigurasFirstTime(canvas, id, user.id, setModalEntidad, setModalTexto);
     canvas.current.on("mouse:down", function (event) {
       const pointer = canvas.current.getPointer(event.e);
 
-      if (typeRef.current == "arrow") {
+      if (typeRef.current == SHAPES.ARROW) {
         ++dbl_click;
 
         if (dbl_click == 1) {
@@ -96,11 +92,11 @@ const Project = () => {
       } else if (typeRef.current != null) {
         setClickCoords({ x: pointer.x, y: pointer.y });
         let modal =
-          typeRef.current === "ellipse" ? setModalTexto : setModalEntidad;
+          typeRef.current === SHAPES.ATTRIBUTE ? setModalTexto : setModalEntidad;
         let options =
-          typeRef.current === "ellipse"
+          typeRef.current === SHAPES.ATTRIBUTE
             ? attributeConfig.current
-            : typeRef.current === "text"
+            : typeRef.current === SHAPES.TEXT
             ? attributeTextRef.current
             : null;
         factory(typeRef.current, pointer, canvas, modal, options, user.id, id);
@@ -109,6 +105,7 @@ const Project = () => {
       }
     });
 
+    getFigurasFirstTime(canvas, id, user.id, setModalEntidad, setModalTexto);
     // Maneja el evento para hacer zoom
     const handleWheel = (event) => {
       const delta = event.e.deltaY;
@@ -174,7 +171,7 @@ const Project = () => {
             {
               <button
                 onClick={() => {
-                  typeRef.current = "arrow";
+                  typeRef.current = SHAPES.ARROW;
                   setMenuFocus(2);
                 }}
                 className={`hover:scale-95 transition-all ease-in-out duration-300 ${
@@ -187,7 +184,7 @@ const Project = () => {
 
             <button
               onClick={() => {
-                typeRef.current = "identity";
+                typeRef.current = SHAPES.IDENTITY;
                 setMenuFocus(3);
               }}
               className={`hover:scale-95 transition-all ease-in-out duration-300 ${

@@ -42,7 +42,7 @@ export function create(points, canvas, setModalTexto, type, userId, idProject) {
 export function update(element, canvas, modal) {
   const { idShape, type, idProyecto, userCreator, ...figure } = element;
   let circ = canvas.current.getObjects().find(obj => obj.id === idShape);
-  let idEl = "";
+
   if (circ) {
     // Si existe, actualiza sus propiedades
     circ.set({
@@ -54,7 +54,7 @@ export function update(element, canvas, modal) {
     });
 
     // Renderiza el canvas para reflejar los cambios
-    canvas.current.renderAll();
+    if(canvas.current)canvas.current.renderAll();
 
     // Asigna los eventos si es necesario
     circ.on("modified", () => {
@@ -74,8 +74,11 @@ export function update(element, canvas, modal) {
   else{
   
       let newCirc = new fabric.Ellipse({...figure, id: idShape});
-      canvas.current.add(newCirc);
-      canvas.current.renderAll();
+      
+      if(canvas.current){
+        canvas.current.add(newCirc);
+        canvas.current.renderAll()
+      };
       newCirc.on("modified", () => {
         const angle = newCirc.angle;
         let scaleX = newCirc.scaleX;
