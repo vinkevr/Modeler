@@ -10,16 +10,16 @@ import { fabric } from "fabric";
 import ModalAddAttribute from "../ui/ModalAddAttribute";
 import ModalAddTextAttribute from "../ui/ModalAddTextAttribute";
 import factory from "../../shapesFactory/shapesFactory";
-import  opcionesEntidad  from "../../helpers/constants/opcionesEntidad.js";
+import opcionesEntidad from "../../helpers/constants/opcionesEntidad.js";
 import { create as createArrow } from "../../shapesStrategy/arrow.js";
-import {getFigurasFirstTime} from "../../helpers/transactionsWithFirebase.js";
+import { getFigurasFirstTime } from "../../helpers/transactionsWithFirebase.js";
 import SHAPES from "../../helpers/constants/shapes.js";
 const Project = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [menuFocus, setMenuFocus] = useState(1);
   const [modalEntidad, setModalEntidad] = useState(false);
-  const [modalTexto, setModalTexto] = useState(false);
+  const [modalTexto, setModalTexto] = useState({ isActive: false, type: null });
   const [clickCoords, setClickCoords] = useState({ x: 0, y: 0 }); //para guardar coordenadas
   //Para tomar el tamaño del contenedor
   const canvasContainerRef = useRef(null);
@@ -34,6 +34,10 @@ const Project = () => {
   const attributeConfig = useRef(null);
   //Agregar texto al titulo
   const attributeTextRef = useRef("");
+  //Agregar el tipo de atributo
+  const attributeTypeRef = useRef("");
+  //Agregar el tipo de de decorado al texto
+  const attributeIskey = useRef(false);
   //es para las flechas que se agregue con doble click
   let dbl_click = 0;
   const puntosArrow = {
@@ -45,13 +49,22 @@ const Project = () => {
   const addTextAttribute = (txt) => {
     typeRef.current = SHAPES.TEXT;
     attributeTextRef.current = txt;
-    setModalTexto(false);
+    attributeIskey.current =
+      modalTexto.type === opcionesEntidad.PK.type ||
+      modalTexto.type === opcionesEntidad.FK.type
+      || modalTexto.type
+        ? true
+        : false;
+    setModalTexto({ isActive: false, type: false });
   };
   const addEntityElement = (type, txt = "") => {
     if (type.type === opcionesEntidad.TXT.type) {
       typeRef.current = SHAPES.TEXT;
       attributeTextRef.current = txt;
-    } else {
+    } else if (type.type === opcionesEntidad.RELACION.type) {
+      typeRef.current = SHAPES.Polygon;
+    }
+    else if (type.type === opcionesEntidad.ATRIBUTO.type) {
       typeRef.current = SHAPES.ATTRIBUTE;
       attributeConfig.current = type;
     }
@@ -92,15 +105,27 @@ const Project = () => {
       } else if (typeRef.current != null) {
         setClickCoords({ x: pointer.x, y: pointer.y });
         let modal =
-          typeRef.current === SHAPES.ATTRIBUTE ? setModalTexto : setModalEntidad;
+          typeRef.current === SHAPES.ATTRIBUTE || typeRef.current === SHAPES.Polygon
+            ? setModalTexto
+            : setModalEntidad;
         let options =
           typeRef.current === SHAPES.ATTRIBUTE
             ? attributeConfig.current
             : typeRef.current === SHAPES.TEXT
             ? attributeTextRef.current
             : null;
-        factory(typeRef.current, pointer, canvas, modal, options, user.id, id);
+        factory(
+          typeRef.current,
+          pointer,
+          canvas,
+          modal,
+          options,
+          user.id,
+          id,
+          attributeIskey.current
+        );
         typeRef.current = "";
+        attributeIskey.current = false;
         setMenuFocus(1);
       }
     });
@@ -205,9 +230,10 @@ const Project = () => {
           addEntityElement={addEntityElement}
           x={clickCoords.x}
           y={clickCoords.y}
+          attributeTypeRef={attributeTypeRef}
         />
       )}
-      {modalTexto && (
+      {modalTexto.isActive && (
         <ModalAddTextAttribute
           setModalTexto={setModalTexto}
           addTextAttribute={addTextAttribute}

@@ -15,10 +15,8 @@ export const updateInFirebase = async (element, data) => {
     .where("idShape", "==", element.idShape)
     .get()
     .then((querySnapshot) => {
-      //console.log(querySnapshot)
       if (!querySnapshot.empty) {
         idCollElement = querySnapshot.docs[0].id;
-        //console.log(idCollElement)
       }
     });
 
@@ -62,13 +60,11 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
           let modal = data.type === SHAPES.IDENTITY ? setModalEntidad : setModalTexto;
           if ( data.userCreator !== userId) 
           {
-            console.log("se agrego", change.doc.data().idShape);
             factory(`${data.type}-u`, data, canvas, modal);
           }
         }
         if (change.type === "modified") {
           const data = change.doc.data();
-        console.log("algo se modifico");
             //buscar el objeto en el canvas
             const obj = canvas.current.getObjects().find((obj) => obj.id === data.idShape);
             if (obj) {
