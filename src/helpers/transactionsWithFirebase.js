@@ -1,5 +1,6 @@
 import firebase from "../firebase";
 import factory from "../shapesFactory/shapesFactory.js";
+import SHAPES from "../helpers/constants/shapes.js";
 //Guardar en firebase los elementos que se crearon
 export const saveInFirebase = (element) => {
   firebase.db.collection("proyectos").add(element);
@@ -14,10 +15,8 @@ export const updateInFirebase = async (element, data) => {
     .where("idShape", "==", element.idShape)
     .get()
     .then((querySnapshot) => {
-      //console.log(querySnapshot)
       if (!querySnapshot.empty) {
         idCollElement = querySnapshot.docs[0].id;
-        //console.log(idCollElement)
       }
     });
 
@@ -33,17 +32,16 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          if (doc.data().type !== "text") {
+          if (doc.data().type !== SHAPES.TEXT) {
             let data = doc.data();
-            console.log(data)
-            let modal = data.type === "process" ? setModalEntidad : setModalTexto;
+            let modal = data.type === SHAPES.IDENTITY ? setModalEntidad : setModalTexto;
             factory(`${data.type}-u`, data, canvas, modal);
           } 
         });
         //Pintar los textos
         querySnapshot.forEach((doc) => {
           let data = doc.data();
-          if (data.type === "text") {
+          if (data.type === SHAPES.TEXT) {
             factory(`${data.type}-u`, data, canvas, null);
           }
         });
@@ -59,7 +57,7 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         //Pintar el agregado solo a los usuarios que son diferentes al que lo creo
         if (change.type === "added") {
           const data = change.doc.data();
-          let modal = data.type === "process" ? setModalEntidad : setModalTexto;
+          let modal = data.type === SHAPES.IDENTITY ? setModalEntidad : setModalTexto;
           if ( data.userCreator !== userId) 
           {
             factory(`${data.type}-u`, data, canvas, modal);
@@ -67,7 +65,6 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
         }
         if (change.type === "modified") {
           const data = change.doc.data();
-          console.log("se modifico", data.idShape);
             //buscar el objeto en el canvas
             const obj = canvas.current.getObjects().find((obj) => obj.id === data.idShape);
             if (obj) {
@@ -76,8 +73,8 @@ export const getFigurasFirstTime = async (canvas, proyectoId, userId, setModalEn
               obj.angle = data.angle;
               obj.scaleX = data.scaleX;
               obj.scaleY = data.scaleY;
+              if(canvas.current)canvas.current.renderAll();
             }
-            canvas.current.renderAndReset();
           
         }
       });

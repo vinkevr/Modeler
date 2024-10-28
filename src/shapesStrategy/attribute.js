@@ -1,5 +1,7 @@
 import { fabric } from "fabric";
 import { updateInFirebase, saveInFirebase } from "../helpers/transactionsWithFirebase.js";
+import opcionesEntidad  from "../helpers/constants/opcionesEntidad.js";
+import SHAPES from "../helpers/constants/shapes.js";
 export function create(points, canvas, setModalTexto, type, userId, idProject) {
 
   const config = {
@@ -15,8 +17,9 @@ export function create(points, canvas, setModalTexto, type, userId, idProject) {
  var elementToFirebase = {
     ...config,
     idShape: idEl,
-    type: "ellipse",
-    userCreator: userId 
+    type: SHAPES.ATTRIBUTE,
+    userCreator: userId,
+    isKey: type.type === opcionesEntidad.PK.type  || type.type === opcionesEntidad.FK.type ? true : false, 
   };
 
   canvas.current.add(circ);
@@ -31,7 +34,7 @@ export function create(points, canvas, setModalTexto, type, userId, idProject) {
   circ.on("mousedblclick", () => {
     //setEntidadInFocus(elementsInCanvas[idEl]);
     //Abrir modal para agregar atributos
-    setModalTexto(true);
+    setModalTexto({isActive:true, type:type.type});
   });
  saveInFirebase({
     ...elementToFirebase,
@@ -40,9 +43,8 @@ export function create(points, canvas, setModalTexto, type, userId, idProject) {
 }
 
 export function update(element, canvas, modal) {
-  const { idShape, type, idProyecto, userCreator, ...figure } = element;
+  const { idShape, type, idProyecto, userCreator, isKey, ...figure } = element;
   let circ = canvas.current.getObjects().find(obj => obj.id === idShape);
-  let idEl = "";
   if (circ) {
     // Si existe, actualiza sus propiedades
     circ.set({
@@ -54,7 +56,7 @@ export function update(element, canvas, modal) {
     });
 
     // Renderiza el canvas para reflejar los cambios
-    canvas.current.renderAll();
+    if(canvas.current)canvas.current.renderAll();
 
     // Asigna los eventos si es necesario
     circ.on("modified", () => {
@@ -68,14 +70,17 @@ export function update(element, canvas, modal) {
 
     circ.on("mousedblclick", () => {
       //Abrir modal para agregar atributos
-      modal(true);
+      modal({isActive:true, type:isKey});
     });
   }
   else{
   
       let newCirc = new fabric.Ellipse({...figure, id: idShape});
-      canvas.current.add(newCirc);
-      canvas.current.renderAll();
+      
+      if(canvas.current){
+        canvas.current.add(newCirc);
+        canvas.current.renderAll()
+      };
       newCirc.on("modified", () => {
         const angle = newCirc.angle;
         let scaleX = newCirc.scaleX;
@@ -86,7 +91,7 @@ export function update(element, canvas, modal) {
       });
       newCirc.on("mousedblclick", () => {
         //Abrir modal para agregar atributos
-        modal(true);
+        modal({isActive:true, type:isKey});
       });
   }
 }

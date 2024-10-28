@@ -1,5 +1,5 @@
 import { useState } from "react";
-import opcionesEntidad  from "../../helpers/opcionesEntidad.js";
+import opcionesEntidad  from "../../helpers/constants/opcionesEntidad.js";
 
 const ModalAddAttribute = ({ addEntityElement, x, y }) => {
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +19,7 @@ const ModalAddAttribute = ({ addEntityElement, x, y }) => {
       </button>
       <button
         className="text-white text-md font-semibold border-b border-b-slate-300 text-center py-2 px-3 cursor-pointer hover:bg-gray-800"
-        onClick={() => addEntityElement(opcionesEntidad.PK)}
+        onClick={() => {addEntityElement(opcionesEntidad.PK)}}
       >
         Agregar llave primaria
       </button>

@@ -3,6 +3,7 @@ import {
   updateInFirebase,
   saveInFirebase,
 } from "../helpers/transactionsWithFirebase.js";
+import SHAPES from "../helpers/constants/shapes.js";
 export function create(points, canvas, setModalEntidad, userId, idProject) {
   const config = {
     left: points.x,
@@ -12,13 +13,15 @@ export function create(points, canvas, setModalEntidad, userId, idProject) {
     fill: "#024079",
     stroke: "#024079",
     strokeWidth: 5,
+    scaleX: 1,
+    scaleY: 1,
   };
 
   //it is a new element on the canvas
   let idEl = `${Date.now()}-${Math.floor(Math.random() * 100)}`;
 
   let rect = new fabric.Rect({ ...config, id: idEl });
-  var elementToFirebase = { ...config, idShape: idEl, type: "process", userCreator: userId };
+  var elementToFirebase = { ...config, idShape: idEl, type: SHAPES.IDENTITY, userCreator: userId };
   canvas.current.add(rect);
 
   rect.on("modified", () => {
@@ -32,29 +35,30 @@ export function create(points, canvas, setModalEntidad, userId, idProject) {
   rect.on("mousedblclick", () => {
     //Abrir modal para agregar atributos
     setModalEntidad(true);
-    console.log("Doble click");
   });
   saveInFirebase({ ...elementToFirebase, idProyecto: idProject});
 }
 
 export function update(element, canvas, modal) {
+
     const { idShape, type, idProyecto, userCreator, ...figure } = element;
   
     // Busca el objeto existente en el canvas usando el idShape
     let rect = canvas.current.getObjects().find(obj => obj.id === idShape);
   
     if (rect) {
+      
       // Si existe, actualiza sus propiedades
       rect.set({
         left: figure.left,
         top: figure.top,
-        scaleX: figure.scaleX,
-        scaleY: figure.scaleY,
-        angle: figure.angle,
+        scaleX: figure.scaleX ?? 1,
+        scaleY: figure.scaleY ?? 1,
+        angle: figure.angle ?? null,
       });
   
       // Renderiza el canvas para reflejar los cambios
-      canvas.current.renderAll();
+      if(canvas.current)canvas.current.renderAll();
   
       // Asigna los eventos si es necesario
       rect.on("modified", () => {
@@ -73,8 +77,12 @@ export function update(element, canvas, modal) {
     } else {
       // Si no existe el objeto, crea uno nuevo
       let newRect = new fabric.Rect({ ...figure, id: idShape });
-      canvas.current.add(newRect);
-      canvas.current.renderAll();
+      
+      if(canvas.current){
+        canvas.current.add(newRect);
+        canvas.current.renderAll();
+      }
+
   
       newRect.on("modified", () => {
         let angle = newRect.angle;
