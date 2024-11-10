@@ -4,7 +4,6 @@ import Chat from './Chat';
 import IA from './IA';
 import ModalAddColab from './ModalAddColab';
 import UserContext from '../../context/UserContext';
-import firebase from '../../firebase';
 import {formatearNombre} from '../../helpers/formatear';
 const SidebarChat = ({idRuta}) => {
     const {user} = useContext(UserContext);

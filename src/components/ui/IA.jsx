@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import send from '../../images/send.png';
 import '../../site.css';
-import MessageSent from './MessageSent';
+import MessageIASent from './MessageIASent';
 
 const IA = () => {
-  const API_KEY = "";
+  const API_KEY = import.meta.env.VITE_API_KEY_CHATGPT;
   const [messages, setMessages] = useState([
     {
       message: "Hola, soy ChatGPT. Si tienes alguna pregunta relacionada a las bases de datos no dudes en preguntarme.",
@@ -13,6 +13,17 @@ const IA = () => {
   ]);
 
   const [inputValue, setInputValue] = useState('');
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = async () => {
     if (inputValue.trim() === '') return;
@@ -43,7 +54,7 @@ const IA = () => {
 
     const systemMessage = {
       role: "system",
-      content: "EXplica todo como si fuera un principiante en el tema de bases de datos. Todo lo referente a diagramas entidad relacion ER darás respuestas utilizando la notación de Chen"
+      content: "Explica todo como si fuera un principiante en el tema de bases de datos. Todo lo referente a diagramas entidad relación ER darás respuestas utilizando la notación de Chen."
     };
 
     const apiRequestBody = {
@@ -82,8 +93,9 @@ const IA = () => {
     <>
       <div className='bg-stone-200 h-2/3 overflow-auto'>
         {messages.map((message, i) => (
-          <MessageSent key={i} message={message} />
+          <MessageIASent key={i} message={message} />
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className='flex'>

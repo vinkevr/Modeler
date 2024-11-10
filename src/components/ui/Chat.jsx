@@ -3,10 +3,9 @@ import { io } from 'socket.io-client';
 import UserContext from '../../context/UserContext';
 import send from '../../images/send.png';
 import Message from './Message';
-import '../../site.css';
 import MessageSent from './MessageSent';
 
-const socket = io('http://localhost:6679', {
+const socket = io(import.meta.env.VITE_URL_API_CHAT, {
   transports: ['websocket'] // Forzar el uso de websocket
 });
 
@@ -18,7 +17,7 @@ const Chat = ({ idProject }) => {
   useEffect(() => {
     // Traer los mensajes si existen
     const GetMessages = async () => {
-      const url = `http://localhost:6679/messages?room=${idProject}`;
+      const url = `${import.meta.env.VITE_URL_API_CHAT}/messages?room=${idProject}`;
       const response = await fetch(url);
       const data = await response.json();
       setMessages(data);
@@ -29,8 +28,7 @@ const Chat = ({ idProject }) => {
     socket.emit('joinRoom', idProject);
 
     // Escuchar mensajes de la room
-    const messageListener = ({ message, idUser, userName }) => {
-      console.log(`Mensaje recibido: ${message}`);
+   const messageListener = ({ message, idUser, userName }) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         { content: message, userId: idUser, username: userName }
@@ -48,9 +46,8 @@ const Chat = ({ idProject }) => {
   const handleMessage = async () => {
     // Verificar que si se tenga un mensaje
     if (newMessage === '') return;
-    console.log(`Mensaje enviado: ${newMessage}`);
     // Enviar el mensaje al servidor
-    socket.emit('message', { message: newMessage.trim(), idUser: user.id, userName: user.nombre }, idProject);
+   socket.emit('message', { message: newMessage.trim(), idUser: user.id, userName: user.nombre }, idProject);
     setMessages((prevMessages) => [
       ...prevMessages,
       { content: newMessage, userId: user.id, username: user.nombre }
@@ -69,14 +66,13 @@ const Chat = ({ idProject }) => {
           }
         })}
       </div>
-      <form className='flex'>
+      <form className='flex' onSubmit={e => e.preventDefault()}>
         <input
           className='ml-5 w-4/5 h-5/6 shadow-lg border border-gray-300 px-6 py-3 rounded-lg focus:outline-none focus:outline-blue-500 focus:shadow-outline'
           onChange={(e) => setNewMessage(e.target.value)}
           value={newMessage}
         />
         <button
-          className=''
           onClick={handleMessage}
         >
           <img src={send} className='h-8 w-8' />
