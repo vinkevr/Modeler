@@ -49,7 +49,6 @@ export function create(points, canvas, setModalTexto, userId, idProject) {
   saveInFirebase({ ...elementToFirebase, idProyecto: idProject });
 }
 export function update(element, canvas, modal) {
-    console.log("es una union");
   const { idShape, type, idProyecto, userCreator, ...figure } = element;
   let relation = canvas.current.getObjects().find((obj) => obj.id === idShape);
   if (relation) {
