@@ -64,7 +64,7 @@ const Project = () => {
     } else if (type.type === opcionesEntidad.RELACION.type) {
       typeRef.current = SHAPES.Polygon;
     }
-    else if (type.type === opcionesEntidad.ATRIBUTO.type) {
+    else if (type.type === opcionesEntidad.ATRIBUTO.type || type.type === opcionesEntidad.PK.type || type.type === opcionesEntidad.FK.type) {
       typeRef.current = SHAPES.ATTRIBUTE;
       attributeConfig.current = type;
     }
